@@ -14,11 +14,11 @@ import Box from '@material-ui/core/Box';
 import Individual from './Individual';
 
 const Bill = () => {
-    const [item, setItem] = useState([
-        { id: nanoid(), name: 'Person', lable: "ppl", ppl: 0 },
-        { id: nanoid(), name: 'Sum', lable: "KGS", sum: 0 },
-        { id: nanoid(), name: 'Tips', lable: "%", tips: 0 },
-        { id: nanoid(), name: 'Delivery', lable: "KGS", delivery: 0 },
+    const [items, setItems] = useState([
+        { id: nanoid(), name: 'Person', lable: "ppl", ppl: '' },
+        { id: nanoid(), name: 'Sum', lable: "KGS", sum: '' },
+        { id: nanoid(), name: 'Tips', lable: "%", tips: '' },
+        { id: nanoid(), name: 'Delivery', lable: "KGS", delivery: '' },
     ]);
 
     const [value, setValue] = useState('all');
@@ -31,14 +31,38 @@ const Bill = () => {
         setValue(event.target.value);
     };
 
-    const addPpl = () => {
-        setItem(item => [...item, { ppl: '' }])
+    // const values_handler = (e) => {
+    //     let name = e.target.name;
+    //     let value = e.target.value;
+    //     const newItem = {
+    //         ...items,
+    //         [name]: value
+    //     }
+    //     setItems(newItem)
+
+    //     // Calling the method to sum the value
+    //     calc_total(newItem)
+    // };
+
+    // const calc_total = (newItem) => {
+    //     const { ppl, sum, tips, delivery } = newItem;
+    //     const newTotal = parseInt(ppl) + parseInt(sum) + parseInt(tips) + parseInt(delivery)
+    //     setTotalPrice(newTotal)
+    // };
+
+    const onTextInputChange = (ppl, id, value) => {
+        setItems(items => {
+            return items.map(item => {
+                if (item.id === id) {
+                    return { ...item, [ppl]: value }
+                }
+                return item;
+            })
+        })
     };
 
     const totalSum = () => {
-        return item.reduce((acc, i) => {
-            return acc + i.ppl;
-        }, 0)
+        return items.sum / items.ppl;
     };
 
     return (
@@ -62,9 +86,18 @@ const Bill = () => {
                 {value === 'all' ? (
                     <>
                         <form >
-                            {item.map(item => (
+                            {items.map(item => (
                                 <Grid item key={item.id} container justifyContent="center" alignItems="center" component={Box} m={1}>
-                                    <p>{item.name}:</p><TextField id="outlined-basic" label={item.lable} variant="outlined" component={Box} m={1} />
+                                    <p>{item.name}:</p>
+                                    <TextField id="outlined-basic"
+                                        label={item.lable}
+                                        variant="outlined"
+                                        component={Box} m={1}
+                                        type='number'
+                                        name={item.name}
+                                        value={item.price}
+                                        onChange={onTextInputChange}
+                                    />
                                 </Grid>
                             ))}
                         </form>
@@ -78,9 +111,9 @@ const Bill = () => {
                         {showResults === true ? (
                             <>
                                 <Grid item component={Box} m={3}>
-                                    <p>Total sum: {item.sum + item.tips}</p>
-                                    <p>Number of person : {totalSum}</p>
-                                    <p>The amount of each : {addPpl}</p>
+                                    <p>Total sum: {items.sum}</p>
+                                    <p>Number of person : { }</p>
+                                    <p>The amount of each : {totalSum}</p>
                                 </Grid>
                             </>
                         ) : null}
